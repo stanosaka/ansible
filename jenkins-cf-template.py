@@ -38,7 +38,7 @@ GithubAnsibleURL = "https://github.com/{}/ansible".format(GithubAccount)
 PublicCidrIp = str(ip_network(get_ip()))
 
 AnsiblePullCmd = \
-"/usr/bin/ansible-pull -U {} {}.yml -i /home/ec2-user/localhost".format( GithubAnsibleURL,
+"/usr/bin/ansible-pull -U {} {}.yml -i localhost".format( GithubAnsibleURL,
 ApplicationName
 )
 
@@ -76,7 +76,7 @@ t.add_resource(ec2.SecurityGroup(
 ud = Base64(Join('\n', [ "#!/bin/bash",
 "yum install --enablerepo=epel -y git",
 "yum install --enablerepo=epel -y ansible",
-"wget -O /home/ec2-user/localhost https://raw.githubusercontent.com/stanosaka/ansible/master/localhost",
+"wget https://raw.githubusercontent.com/stanosaka/ansible/master/localhost",
 AnsiblePullCmd,
 "echo '*/10 * * * * {}' > /etc/cron.d/ansible-pull".format(AnsiblePullCmd)
 ]))
@@ -103,7 +103,7 @@ t.add_resource(InstanceProfile(
 t.add_resource(ec2.Instance(
     "instance",
     ImageId="ami-33f92051",
-    InstanceType="t2.micro",
+    InstanceType="t2.medium",
     SecurityGroups=[Ref("SecurityGroup")],
     KeyName=Ref("KeyPair"),
     UserData=ud,
