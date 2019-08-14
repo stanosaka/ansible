@@ -95,7 +95,7 @@
                     "Ref": "InstanceProfile"
                 },
                 "ImageId": "ami-33f92051",
-                "InstanceType": "t2.micro",
+                "InstanceType": "t2.medium",
                 "KeyName": {
                     "Ref": "KeyPair"
                 },
@@ -112,6 +112,7 @@
                                 "#!/bin/bash",
                                 "yum install --enablerepo=epel -y git",
                                 "yum install --enablerepo=epel -y ansible",
+                                "wget https://raw.githubusercontent.com/stanosaka/ansible/master/localhost",
                                 "/usr/bin/ansible-pull -U https://github.com/stanosaka/ansible jenkins.yml -i localhost",
                                 "echo '*/10 * * * * /usr/bin/ansible-pull -U https://github.com/stanosaka/ansible jenkins.yml -i localhost' > /etc/cron.d/ansible-pull"
                             ]
