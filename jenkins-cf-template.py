@@ -34,12 +34,11 @@ ApplicationName = "jenkins"
 ApplicationPort = "8080"
 GithubAccount = "stanosaka"
 GithubAnsibleURL = "https://github.com/{}/ansible".format(GithubAccount)
-GithubBranch = "jenkins"
 
 PublicCidrIp = str(ip_network(get_ip()))
 
 AnsiblePullCmd = \
-"/usr/bin/ansible-pull -U {} -C {} {}.yml -i localhost".format( GithubAnsibleURL, GithubBranch,
+"/usr/bin/ansible-pull -U {} {}.yml -i /home/ec2-user/localhost".format( GithubAnsibleURL,
 ApplicationName
 )
 
@@ -77,6 +76,7 @@ t.add_resource(ec2.SecurityGroup(
 ud = Base64(Join('\n', [ "#!/bin/bash",
 "yum install --enablerepo=epel -y git",
 "yum install --enablerepo=epel -y ansible",
+"wget -O /home/ec2-user/localhost https://raw.githubusercontent.com/stanosaka/ansible/master/localhost",
 AnsiblePullCmd,
 "echo '*/10 * * * * {}' > /etc/cron.d/ansible-pull".format(AnsiblePullCmd)
 ]))
