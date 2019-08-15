@@ -1,5 +1,23 @@
 ---
 # tasks file for codedeploy
-- name: Installs and starts the AWS CodeDeploy Agent
-  aws_codedeploy:
-     enabled: yes
+#- name: Installs and starts the AWS CodeDeploy Agent
+#  aws_codedeploy:
+#     enabled: yes
+- name: Install Packages
+  become: true
+  yum:
+    state: latest
+    name: "{{ item }}"
+    update_cache: yes
+  with_items:
+    - ruby
+
+- name: Download CodeDeploy Agent
+  get_url:
+    url: "https://aws-codedeploy-ap-southeast-2.s3.amazonaws.com/latest/install"
+    dest: /tmp/codedeploy-install
+    mode: 0755
+
+- name: Codedeploy Install
+  become: true
+  command: /tmp/codedeploy-install auto
